@@ -1,0 +1,181 @@
+<script type="text/javascript">
+    $(function () {
+        $(".users").height($(".rightDiv").height() - 100);
+        $(".users_right").height($(".users").height());
+        $(".bts_r").click(function () {
+            $(".users_right").show()
+            var username = $("#username").val("")
+            var passworldId = $("#passworld").val("");
+            var passwordIds = $("#passwordIds").val("");
+            var realname = $("#realname").val("");
+            var email_bt = $("#email_bt").val("");
+            var telnames = $("#telnames").val("");
+        })
+
+        //返回界面
+        $(".Close").click(function () {
+            $(".users_right").hide();
+        });
+
+        //状态按钮
+        $(".state_S").click(function () {
+            $(".states").animate({
+                left: "10px"
+            })
+        });
+        //上传图片
+
+
+
+        //查询所有用户信息
+        $.get("http://120.78.164.247:8099/manager/user/findAllUser", function (results) {
+            var dats = results.data;
+            // console.log(dats);
+            if (results.status === 200) {
+                dats.forEach(function (item, index) {
+                    // console.log(index);
+                    if (index) {
+                        var conlon = $(".information:first").clone();
+
+                        if (item.userface) {
+                            var ss = $(conlon.children()[0]).children().attr('src', item.userface);
+                            console.log(ss);
+                        } else {
+                            var ss = $(conlon.children()[0]).children().attr('src', "./img/g.jpg");
+                        }
+                        // console.log(typeof ss)
+                        $(conlon.children()[1]).children()[1].innerHTML = item.username;
+                        $(conlon.children()[2]).children()[1].innerHTML = item.nickname;
+                        $(conlon.children()[3]).children()[1].innerHTML = item.email
+                        var ss = $(conlon.children()[4]).children()[1].innerHTML = item.id
+                        console.log(ss)
+
+                    }
+                    $(".users").append(conlon);
+                });
+            }
+
+            //加载图片
+
+            //添加
+
+            $(".btn_confirm").click(function () {
+                // $(".users_right").hide();
+                var username = $("#username").val()
+                var passworldId = $("#passworld").val();
+                var passwordIds = $("#passwordIds").val();
+                var realname = $("#realname").val();
+                var email_bt = $("#email_bt").val();
+                var telnames = $("#telnames").val();
+
+
+
+                //表单验证
+                var re = /^[A-Za-z0-9]{6,16}$/
+                var res = /^1[34578][0-9]{9}$/
+                var ss = res.test(email_bt);
+                console.log(ss);
+                if (re.test(passworldId) === re.test(passwordIds) && res.test(telnames)) {
+
+                    var o = {
+
+                        username: username,
+                        nickname: realname,
+                        email: email_bt,
+                        password: passworldId,
+                        userface: "http://39.108.81.60:8888/group1/M00/00/03/rBApFluvSGiAUsJNAAQ8jHMVOho447.jpg"
+
+                    };
+
+                    $.post("http://120.78.164.247:8099/manager/user/saveOrUpdateUser", o, function (results) {
+                        if (results.status === 200) {
+                            $(".rightDiv_content").load('pages/user.html');
+                        }
+
+                    })
+                } else if (re.test(passworldId) !== re.test(passwordIds) && !res.test(telnames)) {
+                    alert("两次密码不正确请重新输入")
+                }
+
+            })
+
+            //通过id删除
+
+            $(".information").each(function (index, item) {
+                console.log(item)
+                /*获取所有的对象，进行遍历获得他的id值*/
+                $(item).click(function () {
+                    console.log("你好", item);
+                    var ids = this.children[4].children[1].innerText;
+                    console.log("你好", ids)
+                    o = {
+                        id: ids
+                    }
+                    console.log(o)
+                    $.get("http://120.78.164.247:8099/manager/user/deleteUserById", { id: ids }, function (results) {
+                        if (results.status === 200) {
+                            $(".rightDiv_content").load('pages/user.html');
+                        }
+                    })
+                })
+
+
+
+
+            })
+        });
+
+    })
+</script>
+<div class="users">
+    <div class="bts">
+        <button class=" btn btn-success bts_r">新增 </button>
+    </div>
+    <div class="users_right">
+        <a href="javascript:void(0)"><span class="Close">>关闭</span></a>
+
+        <!--form表单-->
+        <div class="forms">
+            <form action="">
+                <div class=" form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" class=" form-control" id="username" placeholder="name">
+                    <label for="passwordId">密码</label>
+                    <input type="password" class=" form-control" id="passwordId" placeholder="密码">
+                    <label for="passwordIds">重复密码</label>
+                    <input type="password" class=" form-control" id="passwordIds" placeholder="重复密码">
+                    <label for="realname">真实姓名</label>
+                    <input type="text" class=" form-control" id="realname" placeholder="真实姓名">
+                    <label for="telnames">电话</label>
+                    <input type=" tel" class=" form-control" id="telnames" placeholder="name">
+                    <label for="telnames">email</label>
+                    <input type=" email" class=" form-control" id="email_bt" placeholder="email">
+
+                </div>
+
+            </form>
+            <div class="confirm">
+                <button class="btn btn-danger btn_confirm">确认</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!--新增登录人员-->
+    <div class="col-md-3 information">
+        <p class="span_ids">
+            <img src="" alt="">
+        </p>
+
+        <p><span>用户名</span> <span></span></p>
+        <p><span>真实姓名</span> <span></span></p>
+        <p><span>email</span> <span></span></p>
+        <p style="display:none;"><span>id</span><span></span></p>
+        <div class="state">
+            <div class="state_S">
+                <span>关闭</span>
+            </div>
+        </div>
+    </div>
+
+</div>

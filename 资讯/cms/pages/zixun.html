@@ -1,0 +1,146 @@
+<script type="text/javascript">
+    $(function () {
+        $(".zixunContent").height($(".rightDiv").height() - 100);
+        //新增
+
+
+
+        //请求所有内容
+        $.get("http://120.78.164.247:8099/manager/article/findArticle", { page: 4, pageSize:6}, function (results) {
+
+            var res = results.data;
+            var lists = res.list
+            lists.forEach(function (item) {
+                var clon = $(".hidden").clone();
+                clon.removeAttr("class");
+                var ss = clon.children(":first").children(":first").val(item.id);
+                var ts = $(clon.children()[1]).text(item.title)
+                $(clon.children()[2]).text(item.liststyle)
+                $(clon.children()[3]).text(item.music)
+                // console.log(ts);
+                $("tbody").append(clon);
+            })
+
+            //批量删除
+            $(".piliang").click(function () {
+                $("input:checkbox").each(function (index, item) {
+                    var arr = [];
+                    var inputs =Number( $(item).val());
+                    console.log(inputs)
+                    arr.push(inputs)
+
+
+                    if (arr.length) {
+
+                        var inps = {
+                            id: arr,
+                        };
+                        console.log(inps);
+                    }
+                    $.post("http://120.78.164.247:8099/manager/article/batchDeleteArticle", inps, function (results) {
+                        if (results.status === 200) {
+                            $(".rightDiv_content").load('./pages/zixun.html')
+                        }
+                    })
+
+                })
+            })
+
+            //通过id删除
+            $(".deleteById").click(function () {
+                var idss = $(this).parent().parent().children(":first").children().val();
+                var ss = Number(idss)
+                console.log(ss);
+                // var o = {
+                //     id: Number(idss)
+                // }
+                $.get("http://120.78.164.247:8099/manager/article/deleteArticleById", { id: ss }, function (results) {
+                    if (results.status === 200) {
+                        $(".rightDiv_content").load('./pages/zixun.html')
+                    }
+                })
+            })
+
+        });
+
+    });
+
+
+</script>
+
+<div class="zixunContent">
+    <div class="Consultation">
+
+    </div>
+    <div class="btnm">
+        <button type="button" class="btn btn-primary btn-lg newlyadded" data-toggle="modal" data-target="#myModal">
+            新增
+        </button>
+        <button type="button" class="btn btn-primary btn-lg piliang">
+            批量删除
+        </button>
+    </div>
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="#">
+                        <div class=" form-group">
+                            <label for="Title">标题</label>
+                            <input type="text" class=" form-control" id="Title">
+                        </div>
+                        <div class=" form-group">
+                            <label for="Belonged">所属栏目</label>
+                            <input type="text" class=" form-control" id="Belonged">
+                        </div>
+                        <div class=" form-group">
+                            <label for=""></label>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary mont">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <table class="table table-bordered tables">
+        <tbody>
+            <tr>
+                <th>编号</th>
+                <th>文章标题</th>
+                <th>所属栏目</th>
+                <th>背景音乐</th>
+                <th>作者</th>
+                <th>发布时间</th>
+                <th>阅读次数</th>
+                <th>操作</th>
+            </tr>
+            <!--咨询-->
+            <tr class="hidden">
+                <td><input type="checkbox" id="checbo"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <i class="glyphicon glyphicon-pencil updata"></i>
+                    <i class="glyphicon glyphicon-trash deleteById"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script type=""></script>

@@ -1,0 +1,113 @@
+a{
+    text-decoration: none;
+}
+.lanmuContent{
+    width: 97%;
+    background-color: #ffffff;
+    margin-top:10px;
+    margin-left: 10px;
+    border: 1px solid #ffffff;
+}
+div.btns{
+    margin-top:10px;
+    margin-left: 10px;
+}
+button{
+    margin-left: 10px;
+}
+.lanmuContent table{
+    width:95%;
+    margin:10px auto;
+
+}
+.lanmuContent table th,.lanmuContent table td{
+    text-align: center;
+}
+
+
+/*咨询栏目修饰*/
+.zixunContent{
+   width: 97%;
+   /* height:500px; */
+   margin-top:15px ;
+   margin-left: 15px;
+   background-color: #ffffff; 
+}
+.btnm{
+    margin-top:10px;
+}
+.tables{
+    margin-top:20px
+}
+
+
+/*用户*/
+div.users{
+    width: 95%;
+    margin-top: 15px;
+    /* margin-left: 15px; */
+    margin:15px auto;
+    background-color: #ffffff;
+}
+.bts_r{
+    /* float: left; */
+    margin-top: 10px;
+}
+div.users_right{
+    display: none;
+    float: right;
+    width: 40%;
+    height:600px;
+    /* background-color: aqua; */
+    border:groove 1px rgb(212, 208, 235);
+}
+div.confirm{
+    float:right;
+}
+div.confirm button{
+    margin-top: 10px;
+}
+div.forms{
+    margin-top: 30px;
+}
+div.users_right .Close{
+    color: black;
+    font-size: 18px;
+}
+
+div.users .col-md-3{
+    
+    /* width: 300px; */
+    height:260px;
+    background-color: aqua;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+div.users .col-md-3 .span_ids{
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    margin:0 auto;
+}
+.information .state{
+    width: 50px;
+    height:30px;
+    background-color: black;
+    margin:0 auto;
+    border-radius: 20%;
+}
+.information .state .state_S{
+    width: 30px;
+    height:30px;
+    background-color: red;
+    border-radius: 50%;
+}
+
+ .span_ids img{
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    /* background-color: #ffffff; */
+    margin:0 auto;
+ }

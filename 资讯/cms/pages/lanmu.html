@@ -1,0 +1,252 @@
+<!--模态框-->
+<div class="modal">
+    <div class=" modal-dialog">
+        <div class=" modal-content">
+            <div class=" modal-header">
+                <span class="mytile">添加栏目信息</span>
+                <span class=" close myClose">&times;</span>
+            </div>
+            <div class=" modal-body">
+                <form action="#">
+                    <span class="hiddenId"><input type="text"></span>
+                    <span>栏目名称</span>
+                    <input type="text" class=" lanmuName">
+                    <span>描述</span>
+                    <input type="text" class="des">
+                    <span>父栏目</span>
+                    <select name="" id="parent">
+                        <option value="">请选择</option>
+                    </select>
+                </form>
+            </div>
+            <div class=" modal-footer">
+                <button class="btn btn-default myClose">关闭</button>
+                <button class="btn btn-danger myClose" id="submit">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="lanmuContent">
+    <div class="btns">
+        <button class="btn btn-success" id="bts">添加</button>
+        <button class="btn btn-danger batchDel">批量删除</button>
+    </div>
+    <table class="table table-bordered table-condensed">
+        <tr>
+            <th>编号</th>
+            <th>栏目名称</th>
+            <th>父栏目</th>
+            <th>描述</th>
+            <th>操作</th>
+        </tr>
+        <tbody>
+            <tr class="hidden">
+                <td><input type="checkbox" class="myCheck"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <i class="glyphicon glyphicon-pencil updata"></i>
+                    <i class="glyphicon glyphicon-trash deleteById"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+<script type='text/javascript'>
+    //设置当前栏目内容高度
+    $(function () {
+        $(".lanmuContent").height($(".rightDiv").height() - 100)
+    });
+
+    //请求当前栏目信息
+
+    $.get("http://120.78.164.247:8099/manager/category/findAllCategory", function (results) {
+        console.log("请求所有栏目信息", results);
+        if (results.status === 200) {
+            var lanmus = results.data;
+            console.log(lanmus)
+            lanmus.forEach(function (item) {
+
+                var clone = $(".hidden").clone();
+                clone.removeAttr('class');
+                //设置每个tr内容
+                clone.children(":first").children(":first").val(item.id);
+                $(clone.children()[1]).text(item.name);
+                // $(clone.children()[2]).text(item.parent.name)
+                if (item.parent) {
+                    $(clone.children()[2]).text(item.parent.name)
+                } else {
+                    $(clone.children()[2]).text("无")
+                }
+                $(clone.children()[3]).text(item.comment)
+
+                $("tbody").append(clone);
+
+
+                //追加模态框中夫栏目option
+
+                var option = "<option value='" + item.id + "'>" + item.name + "</option>"
+                $("#parent").append(option);
+            })
+
+            //添加按钮
+            $("#bts").click(function () {
+                //修改模态框表头
+                $(".mytile").text("添加栏目信息");
+                //模态框显示之前清空表单内容
+                $(".lanmuName").val("");
+                $(".des").val("");
+                $("#parent").val("");
+                $(".hiddenId").text("");
+                $(".modal").modal('show');
+
+            })
+            //修改
+            $(".updata").click(function () {
+                $(".modal").modal("show");
+                $(".mytile").text("修改栏目信息");
+                //获取当前行数据  dom对象
+
+                var name = $(this).parent().parent().children()[1].innerHTML;
+                var des = $(this).parent().parent().children()[3].innerHTML;
+                var parent = $(this).parent().parent().children()[2].innerHTML;
+                //获取id放在隐藏兰
+                var hiddenId = $(this).parent().parent().children(":first").children().val();
+
+                $(".hiddenId").text(hiddenId);
+                alert(hiddenId);
+
+
+
+                lanmus.filter(function (item) {
+                    return item.name == parent;
+                })[0].id;
+
+                $(".lanmuName").val(name);
+                $(".des").val(des);
+                $("#parent").val();
+            })
+            //模态框确认
+            $("#submit").click(function () {
+                var name = $(".lanmuName").val();
+                var des = $(".des").val();
+                var parent = $("#parent").val();
+                var hiddenId = $(".hiddenId").text()
+
+                if (hiddenId) {
+                    if (name && des) {
+
+                        if (parent) {
+                            var o = {
+                                name: name,
+                                comment: des,
+                                parentId: parent,
+                                no: 1
+                            }
+                        } else {
+                            var o = {
+                                name: name,
+                                comment: des,
+                                parentId: parent,
+                                no: 1
+                            }
+
+                        }
+
+                    } else {
+                        alert("请输入内容");
+                    }
+                } else {
+
+                    if (name && des) {
+
+                        if (parent) {
+                            var o = {
+                                name: name,
+                                comment: des,
+                                parentId: parent,
+                                no: 1
+                            }
+                        } else {
+                            var o = {
+                                name: name,
+                                comment: des,
+                                parentId: parent,
+                                no: 1
+                            }
+
+                        }
+
+                    } else {
+                        alert("请输入内容");
+                    }
+                }
+                // console.log(name, des, parent);
+                $.post("http://120.78.164.247:8099/manager/category/saveOrUpdateCategory", o, function (results) {
+                    if (results.status === 200) {
+                        $(".modal").modal('hide');
+                        $(".rightDiv_content").load('pages/lanmu.html')
+                    }
+                })
+
+
+            });
+
+            $(".myClose").click(function () {
+                $(".modal").modal("hide");
+            })
+
+            //批量删除
+            $(".batchDel").click(function () {
+                var ids = [];
+                $(".myCheck:checked").each(function (index, item) {
+
+                    var id = $(item).val()
+                    ids.push(id);
+
+                });
+                console.log("nihao", ids)
+                if (ids.length) {
+                    var o = {
+                        ids: ids.toString(),
+                    };
+                    // console.log("这个有是",o)
+                    $.post("http://120.78.164.247:8099/manager/category/batchDeleteCategory",o, function (results) {
+                        if (results.status === 200) {
+                            $(".rightDiv_content").load('pages/lanmu.html')
+
+                        }
+                        // alert("succes", results)
+                    })
+
+                }
+            })
+
+            //单个删除
+            $(".deleteById").click(function () {
+                // var idl=[]
+                var ids = $(this).parent().parent().children(':first').children().val();
+                console.log("这个id是", ids);
+
+                var o = {
+                    id:Number(ids)
+                };
+                console.log("这个o", o)
+                $.get("http://120.78.164.247:8099/manager/category/deleteCategoryById",o, function (results) {
+                    if (results.status === 200) {
+                        $(".rightDiv_content").load('pages/lanmu.html')
+                    } else {
+                        // alert("删除失败")
+                    }
+                })
+
+            });
+
+
+        }
+
+    })
+</script>
